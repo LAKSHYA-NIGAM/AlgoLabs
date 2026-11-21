@@ -28,7 +28,7 @@ function assert(condition, message) {
 }
 
 console.log('================================================================');
-console.log('         ALCOLAB PHASE 4: COMPLETE FUNCTIONAL TEST SUITE        ');
+console.log('         ALGOLAB PHASE 4: COMPLETE FUNCTIONAL TEST SUITE        ');
 console.log('================================================================\n');
 
 // ----------------------------------------------------------------------
@@ -361,6 +361,50 @@ test('Curriculum modules contain all 8 sequential chapters plus completion page'
       assert(m.number === '✓', 'Completion number must be ✓');
     }
   });
+});
+
+
+// ----------------------------------------------------------------------
+// 7. ROBUSTNESS & BOUNDARY DEFENSE
+// ----------------------------------------------------------------------
+console.log('\n--- 7. ROBUSTNESS & BOUNDARY DEFENSE ---');
+
+test('DSU safe bounds rejection on negative or out-of-range index', () => {
+  const dsu = new DSU(5);
+  assert(dsu.find(-1) === -1, 'Negative index must return -1');
+  assert(dsu.find(10) === -1, 'Out of bounds index must return -1');
+  assert(dsu.getRoot(-5) === -1, 'Negative getRoot must return -1');
+  assert(dsu.connected(-1, 2) === false, 'Connected with invalid index must return false');
+  const unionResult = dsu.union(-1, 3);
+  assert(unionResult.success === false, 'Union with invalid index must return success: false');
+});
+
+test('DSU component count tracking accurately counts disjoint sets', () => {
+  const dsu = new DSU(6);
+  assert(dsu.getComponentCount() === 6, 'Initial component count must equal vertex size');
+  dsu.union(0, 1);
+  assert(dsu.getComponentCount() === 5, 'Component count must decrement after valid union');
+  dsu.union(2, 3);
+  dsu.union(4, 5);
+  assert(dsu.getComponentCount() === 3, 'Component count must be 3 for three pairs');
+  dsu.union(0, 1); // Redundant union
+  assert(dsu.getComponentCount() === 3, 'Redundant union must not change component count');
+});
+
+test('DSU handles 0-sized and negative size initialization gracefully', () => {
+  const emptyDsu = new DSU(0);
+  assert(emptyDsu.size === 0, 'Size must be 0');
+  assert(emptyDsu.getComponentCount() === 0, 'Component count of empty DSU must be 0');
+  const negDsu = new DSU(-10);
+  assert(negDsu.size === 0, 'Negative size must be normalized to 0');
+});
+
+test('Kruskal algorithm gracefully handles null or undefined inputs without throwing', () => {
+  const nullResult = generateKruskalSnapshots(null, null);
+  assert(nullResult.isSpanningTree === false, 'Must return false for null inputs');
+  assert(nullResult.mstEdges.length === 0, 'MST edges must be empty');
+  const undefResult = generateKruskalSnapshots(undefined, undefined);
+  assert(undefResult.snapshots.length === 0, 'Snapshots must be empty');
 });
 
 console.log('\n================================================================');
