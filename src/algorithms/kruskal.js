@@ -16,8 +16,10 @@ import { DSU } from './dsu.js';
  *   sortedEdges: Array<Object>
  * }}
  */
-export function generateKruskalSnapshots(vertices, edges) {
-  const n = vertices.length;
+export function generateKruskalSnapshots(vertices = [], edges = []) {
+  const safeVertices = Array.isArray(vertices) ? vertices : [];
+  const safeEdges = Array.isArray(edges) ? edges : [];
+  const n = safeVertices.length;
   if (n === 0) {
     return {
       snapshots: [],
@@ -33,13 +35,13 @@ export function generateKruskalSnapshots(vertices, edges) {
   // Create mapping from vertex id/label to index 0..n-1
   const vertexToIndex = new Map();
   const indexToVertex = new Map();
-  vertices.forEach((v, idx) => {
+  safeVertices.forEach((v, idx) => {
     vertexToIndex.set(v.id || v.label, idx);
     indexToVertex.set(idx, v.label || v.id);
   });
 
   // Sort edges ascending by weight. If equal weights, sort deterministically by id
-  const sortedEdges = [...edges].sort((a, b) => {
+  const sortedEdges = [...safeEdges].sort((a, b) => {
     if (a.weight !== b.weight) return a.weight - b.weight;
     return (a.id || '').localeCompare(b.id || '');
   });
