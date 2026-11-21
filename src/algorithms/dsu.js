@@ -3,19 +3,23 @@
  * Implements Path Compression and Union by Rank
  */
 export class DSU {
-  constructor(size) {
-    this.size = size;
-    this.parent = Array.from({ length: size }, (_, i) => i);
-    this.rank = new Array(size).fill(0);
+  constructor(size = 0) {
+    const safeSize = Math.max(0, Number.isInteger(size) ? size : 0);
+    this.size = safeSize;
+    this.parent = Array.from({ length: safeSize }, (_, i) => i);
+    this.rank = new Array(safeSize).fill(0);
   }
 
   /**
    * Find with Path Compression
    * @param {number} x
    * @param {number[]} pathHistory - optional array to record traversal path
-   * @returns {number} representative root
+   * @returns {number} representative root or -1 if out of bounds
    */
   find(x, pathHistory = null) {
+    if (x < 0 || x >= this.size) {
+      return -1;
+    }
     if (pathHistory) {
       pathHistory.push(x);
     }
@@ -28,9 +32,12 @@ export class DSU {
   /**
    * Non-destructive peek at root without modifying path
    * @param {number} x
-   * @returns {number}
+   * @returns {number} representative root or -1 if out of bounds
    */
   getRoot(x) {
+    if (x < 0 || x >= this.size) {
+      return -1;
+    }
     let curr = x;
     while (this.parent[curr] !== curr) {
       curr = this.parent[curr];
@@ -45,6 +52,16 @@ export class DSU {
    * @returns {{ success: boolean, rootX: number, rootY: number, rankX: number, rankY: number }}
    */
   union(x, y) {
+    if (x < 0 || x >= this.size || y < 0 || y >= this.size) {
+      return {
+        success: false,
+        rootX: -1,
+        rootY: -1,
+        rankX: 0,
+        rankY: 0,
+      };
+    }
+
     const rootX = this.find(x);
     const rootY = this.find(y);
 
@@ -92,7 +109,23 @@ export class DSU {
    * Check if two elements share the same root
    */
   connected(x, y) {
+    if (x < 0 || x >= this.size || y < 0 || y >= this.size) {
+      return false;
+    }
     return this.find(x) === this.find(y);
+  }
+
+  /**
+   * Returns total count of distinct disjoint components
+   * @returns {number}
+   */
+  getComponentCount() {
+    if (this.size === 0) return 0;
+    const roots = new Set();
+    for (let i = 0; i < this.size; i++) {
+      roots.add(this.getRoot(i));
+    }
+    return roots.size;
   }
 
   /**
@@ -110,7 +143,8 @@ export class DSU {
    */
   getComponents(size = this.size) {
     const components = {};
-    for (let i = 0; i < size; i++) {
+    const safeLimit = Math.min(size, this.size);
+    for (let i = 0; i < safeLimit; i++) {
       const root = this.getRoot(i);
       if (!components[root]) {
         components[root] = [];
