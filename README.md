@@ -6,7 +6,8 @@
 [![React 19](https://img.shields.io/badge/React-19.3-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Tailwind CSS v4](https://img.shields.io/badge/Tailwind-v4.3-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Tests Passing](https://img.shields.io/badge/Tests-20%20Passing-477B5C)](https://github.com/)
+[![CI](https://github.com/LAKSHYA-NIGAM/AlgoLabs/actions/workflows/ci.yml/badge.svg)](https://github.com/LAKSHYA-NIGAM/AlgoLabs/actions/workflows/ci.yml)
+[![Tests Passing](https://img.shields.io/badge/Tests-24%20Passing-477B5C)](https://github.com/LAKSHYA-NIGAM/AlgoLabs)
 
 ---
 
